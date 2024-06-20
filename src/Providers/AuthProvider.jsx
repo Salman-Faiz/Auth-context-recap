@@ -5,35 +5,45 @@ import { onAuthStateChanged } from "firebase/auth/cordova";
 
 
 export const AuthContext = createContext(null);
+
 const AuthProvider = ({ children }) => {
+
+    // useState declared for holding userData
     const [user, setUser] = useState(null);
+
+    // ANOTHER STATE FOR PREVENTING REDIRECT PAGE
+    const [loading, setLoading] = useState(true)
+
     // / create user in firebase
     const createUser = (email, password) => {
+        setLoading(true);
         return createUserWithEmailAndPassword(auth, email, password);
 
     }
     // log in?sign in user in firebase
     const signInUser = (email, password) => {
+        setLoading(true)
         return signInWithEmailAndPassword(auth, email, password)
     }
     // signOut user
     const signOutUser = () => {
+        setLoading(true);
         return signOut(auth)
     }
 
     // observe Auth state change.. observe user whether logged in or signOut
-    useEffect(()=>{
-        onAuthStateChanged(auth, currentUser =>{
-            if(currentUser){
-              console.log('current user value :',currentUser);
-            setUser(currentUser);  
+    useEffect(() => {
+        const unSubscribe = onAuthStateChanged(auth, currentUser => {
+            console.log('current value of the current user', currentUser);
+            setUser(currentUser);
+            setLoading(false);
+            return () => {
+                unSubscribe();
             }
-            else {
-                console.log(' User is signed out')
-                
-              }
         })
-    },[])
+    }, [])
+
+    
     const authInfo = {
         user,
         createUser,

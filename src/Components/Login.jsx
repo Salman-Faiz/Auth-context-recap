@@ -1,5 +1,27 @@
+import { useContext } from "react";
+import { AuthContext } from "../Providers/AuthProvider";
+
 
 const Login = () => {
+
+    const { signInUser } = useContext(AuthContext);
+
+
+    const handleSignIn = (e) => {
+        e.preventDefault();
+        const name = e.target.name.value;
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        console.log(email, password)
+        // call sign in user to log in into firebase
+        signInUser(email, password)
+            .then(result => {
+                console.log('logged in successfully', result.user);
+            })
+            .catch(error => console.error(error.messege))
+    }
+
     return (
         <div className="  bg-green-200 py-28 rounded-xl">
             <div className="hero-content flex-col ">
@@ -8,7 +30,7 @@ const Login = () => {
 
                 </div>
                 <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100 ">
-                    <form  className="card-body ">
+                    <form onSubmit={handleSignIn} className="card-body ">
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text text-2xl">Email</span>
@@ -28,7 +50,7 @@ const Login = () => {
                             <button className="btn btn-primary">Login</button>
                         </div>
                     </form>
-                    <button  className="bg-green-400 py-2">logIn with Google</button>
+                    <button className="bg-green-400 py-2">logIn with Google</button>
                 </div>
             </div>
         </div>

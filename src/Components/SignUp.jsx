@@ -1,6 +1,12 @@
+import { useContext } from "react";
+import { AuthContext } from "../Providers/AuthProvider";
+
 
 
 const SignUp = () => {
+    const { createUser} =useContext(AuthContext);
+
+
     const handleSignUp =(e) =>{
         e.preventDefault();
         const name = e.target.name.value;
@@ -8,6 +14,13 @@ const SignUp = () => {
         const password =e.target.password.value;
 
         console.log(email,password)
+
+        createUser(email,password)
+        .then(result =>{
+            console.log('Register successfully',result.user)
+        })
+        .catch(error=>console.error(error.messege))
+
     }
 
     return (
